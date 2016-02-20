@@ -3,7 +3,7 @@
 
 var Three2D = _dereq_("./three-2d");
 
-modules.export = Three2D;
+module.exports = Three2D;
 
 },{"./three-2d":2}],2:[function(_dereq_,module,exports){
 "use strict";
