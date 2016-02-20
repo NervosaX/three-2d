@@ -1,0 +1,36 @@
+{
+  "name": "three-2d",
+  "version": "0.0.0",
+  "description": "",
+  "main": "build/three-2d.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "npm run watch | budo src/index.js --live",
+    "watch": "watchify src/index.js -s Three2D -o 'derequire > build/three-2d.js'",
+    "build": "npm run build:development && npm run build:production",
+    "build:development": "browserify src/index.js -s Three2D | derequire > build/three-2d.js",
+    "build:production": "browserify src/index.js -s Three2D | derequire | uglifyjs > build/three-2d.min.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "browserify": {
+    "transform": [
+      [
+        "babelify"
+      ]
+    ]
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.5.0",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "browserify-versionify": "^1.0.6",
+    "budo": "^8.0.4",
+    "derequire": "^2.0.3",
+    "uglify-js": "^2.6.1",
+    "watchify": "^3.7.0"
+  }
+}

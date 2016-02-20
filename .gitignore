@@ -1,0 +1,4 @@
+node_modules
+.#*
+index.min.js
+.tern-port
