@@ -18,3 +18,6 @@ exports.default = Three2D;
 
 },{}]},{},[1])(1)
 });
+
+
+//# sourceMappingURL=three-2d.js.map

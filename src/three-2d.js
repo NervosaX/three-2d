@@ -1,5 +1,4 @@
-function Three2D() {
+// Export our es6 module as just the default function
+var Three2D = require("./main").default;
 
-}
-
-export default Three2D;
+module.exports = Three2D;
