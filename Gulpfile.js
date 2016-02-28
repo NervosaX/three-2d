@@ -17,13 +17,21 @@ var changed = require('gulp-changed');
 var assign = require('lodash.assign');
 var browserSync = require('browser-sync').create();
 
+// Contains library files, meant only for consuming.
 var SRC = "src/";
+// Used for building the demo, otherwise not released to anyone.
 var DIST = "dist/";
+// Build directory containing development and production versions
+// of the app
 var BUILD = "build/";
+// Contains demo files only
 var DEMO = "demo/";
 
 var pjson = require('./package.json');
 
+// Builds development and production versions. This is called
+// either manually (`gulp js`) or on change of one of the source
+// library files
 gulp.task('js', function() {
   var build = browserify(assign({}, {
     entries: SRC + pjson.name + '.js',
@@ -70,7 +78,6 @@ gulp.task('watch', ['html', 'js'], function () {
 
   var demo = watchify(browserify(assign({}, watchify.args, {
     entries: DEMO + 'index.js',
-    // standalone: 'Three2D',
     debug: true
   })));
 
