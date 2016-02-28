@@ -7,11 +7,8 @@
     "test": "test"
   },
   "scripts": {
-    "start": "npm run watch | budo src/index.js --live",
-    "watch": "watchify src/index.js -s Three2D -o 'derequire > build/three-2d.js'",
-    "build": "npm run build:development && npm run build:production",
-    "build:development": "browserify src/index.js -s Three2D | derequire > build/three-2d.js",
-    "build:production": "browserify src/index.js -s Three2D | derequire | uglifyjs > build/three-2d.min.js"
+    "start": "gulp",
+    "build": "gulp js"
   },
   "keywords": [],
   "author": "",
