@@ -28,36 +28,56 @@ var BUILD = "build/";
 var DEMO = "demo/";
 
 var pjson = require('./package.json');
+var build;
+var watch = false;
 
 // Builds development and production versions. This is called
 // either manually (`gulp js`) or on change of one of the source
 // library files
 gulp.task('js', function() {
-  var build = browserify(assign({}, {
-    entries: SRC + pjson.name + '.js',
-    standalone: 'Three2D',
-    debug: true
-  }));
+  if (!build) {
+    build = browserify(assign({}, watchify.args, {
+      entries: SRC + pjson.name + '.js',
+      standalone: 'Three2D',
+      debug: true
+    }));
+    build.on('log', gutil.log);
 
-  function bundle(name) {
+    if (watch) {
+      build = watchify(build);
+    }
+  }
+
+  function bundle(name, errs) {
     return build.bundle()
+      .on('error', function(err){
+        if (errs) {
+          gutil.log(
+            gutil.colors.red("Browserify compile error:"),
+            err.message,
+            err.stack,
+            "\n\t"
+          );
+        }
+        this.emit('end');
+      })
       .pipe(source(name))
       .pipe(buffer())
       .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(derequire())
-      .on('error', gutil.log);
+      .pipe(derequire());
   }
 
-  var development = bundle(pjson.name + '.js')
+  var development = bundle(pjson.name + '.js', true)
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(BUILD));
 
-  var production = bundle(pjson.name + '.min.js')
+  var production = bundle(pjson.name + '.min.js', false)
     .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(BUILD));
 
-  return merge(development, production);
+  var stream = merge(development, production);
+  return stream;
 });
 
 gulp.task('html', function() {
@@ -70,7 +90,11 @@ gulp.task('html-watch', ['html'], function() {
   return browserSync.reload();
 });
 
-gulp.task('watch', ['html', 'js'], function () {
+gulp.task('start-watch', function() {
+  watch = true;
+});
+
+gulp.task('watch', ['start-watch', 'html', 'js'], function () {
   browserSync.init({
     server: "./" + DIST,
     open: false
