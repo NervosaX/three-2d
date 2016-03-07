@@ -71,13 +71,16 @@ gulp.task('js', function() {
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(BUILD));
 
+  if (watch) {
+    return development;
+  }
+
   var production = bundle(pjson.name + '.min.js', false)
     .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(BUILD));
 
-  var stream = merge(development, production);
-  return stream;
+  return merge(development, production);
 });
 
 gulp.task('html', function() {
