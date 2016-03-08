@@ -105,11 +105,18 @@ gulp.task('watch', ['start-watch', 'html', 'js'], function () {
 
   var demo = watchify(browserify(assign({}, watchify.args, {
     entries: DEMO + 'index.js',
-    debug: true
+    debug: true,
+    cache: {},
+    packageCache: {}
   })));
+
+  demo.on('update', function() {
+    bundle().on('end', browserSync.reload);
+  });
 
   function bundle() {
     return demo.bundle()
+      .on('log', gutil.log)
       .pipe(source('index.js'))
       .pipe(buffer())
       .pipe(sourcemaps.init({ loadMaps: true }))
@@ -119,11 +126,6 @@ gulp.task('watch', ['start-watch', 'html', 'js'], function () {
       .pipe(gulp.dest(DIST));
   }
 
-  demo.on('update', function() {
-    bundle().on('end', browserSync.reload);
-  });
-
-  demo.on('log', gutil.log);
 
   gulp.watch(DEMO + '*.html', ['html-watch'])
   gulp.watch(SRC + '**/*.js', ['js'])
